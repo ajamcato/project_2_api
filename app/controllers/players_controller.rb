@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
-class PlayersController < ApplicationController
+class PlayersController < ProtectedController
   before_action :set_player, only: %i[show update destroy]
 
   # GET /players
   def index
-    @players = Player.all
+    @players = current_user.players
 
     render json: @players
   end
@@ -17,7 +17,7 @@ class PlayersController < ApplicationController
 
   # POST /players
   def create
-    @player = Player.new(player_params)
+    @player = current_user.players.build(player_params)
 
     if @player.save
       render json: @player, status: :created, location: @player
@@ -44,7 +44,7 @@ class PlayersController < ApplicationController
 
   # Use callbacks to share common setup or constraints between actions.
   def set_player
-    @player = Player.find(params[:id])
+    @player = current_user.players.find(params[:id])
   end
 
   # Only allow a trusted parameter "white list" through.
